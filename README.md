@@ -33,7 +33,7 @@ int ShowPlayerGreeting_TaskHandle(edict_t *pPlayer);
 void ClientPutInServer_Post(edict_t *pPlayer)
 {
 	if (g_pTaskManager != NULL)
-		g_pTaskManager->ClearTaskByOwner(pEdict);
+		g_pTaskManager->ClearTaskByOwner(pPlayer);
     
 	g_pTaskManager->SetTask(pPlayer, (task_handle_t)ShowPlayerGreeting_TaskHandle, 5.0, TASK_NORMAL);
 
