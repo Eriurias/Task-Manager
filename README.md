@@ -16,7 +16,9 @@ void OnMetaDetach()//or amxx detach
 	delete g_pTaskManager;
 }
 ```
+
 * After turning on the server clear all tasks
+
 ```c++
 void ServerActivate_Post(edict_t *pEdictList, int edictCount, int clientMax)
 {
@@ -26,9 +28,20 @@ void ServerActivate_Post(edict_t *pEdictList, int edictCount, int clientMax)
 	SET_META_RESULT(MRES_IGNORED);
 }
 ```
-* Then use functions on necessity.
 
-## Example
+* In function Start Frame call the corresponding method
+
+```c++
+void StartFrame_Post()
+{
+    if (g_pTaskManager != NULL)
+        g_pTaskManager->StartFrame(TASK_FREQUENCY);
+
+    SET_META_RESULT(MRES_IGNORED);
+}
+```
+
+## Example of use
 
 ```c++
 int ShowPlayerGreeting_TaskHandle(edict_t *pPlayer);
