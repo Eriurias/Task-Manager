@@ -27,7 +27,9 @@ void ServerActivate_Post(edict_t *pEdictList, int edictCount, int clientMax)
 }
 ```
 * Then use functions on necessity.
+
 ## Example
+
 ```c++
 int ShowPlayerGreeting_TaskHandle(edict_t *pPlayer);
 
