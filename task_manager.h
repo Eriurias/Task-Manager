@@ -1,4 +1,11 @@
+#ifndef task_manager_h__
+#define task_manager_h__
 #pragma once
+
+#include <vector>
+#include <extdll.h> // rehlds/dlls/extdll.h
+
+
 
 #define TASK_FREQUENCY 0.1f
 
@@ -15,7 +22,7 @@ typedef enum
 	TASK_IGNORED
 } task_retvalue_t;
 
-typedef int(*task_handle_t)(edict_t *, int);
+typedef int(*task_handle_t)(const edict_t *, int);
 
 class CTaskManager
 {
@@ -27,25 +34,19 @@ private:
 		float m_flStartTime;
 		float m_flCallTime;
 
-		edict_t *m_pOwner;
+		const edict_t *m_pOwner;
 		task_handle_t m_pHandle;
 		task_types_t m_iType;
 
 		int m_iID;
 		int m_iRepeat;
 	public:
-		CTaskProp(void) { };
-		CTaskProp(edict_t * owner, task_handle_t handle, float time, float currenttime, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
+		
+      CTaskProp(const edict_t * owner, task_handle_t handle, float time, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
 
-		void updateCurrentTime(void)
-		{
-			m_flStartTime = gpGlobals->time;
-		}
+		void updateCurrentTime(void);
 
-		bool isExpired()
-		{
-			return gpGlobals->time >= (m_flStartTime + m_flCallTime);
-		}
+		bool isExpired();
 
 		bool isFinished()
 		{
@@ -57,7 +58,7 @@ private:
 			return m_iID;
 		}
 
-		edict_t * getOwner()
+		const edict_t * getOwner()
 		{
 			return m_pOwner;
 		}
@@ -75,11 +76,9 @@ private:
 
 	int m_iTaskCount;
 	float m_flNextFrame;
-	typedef std::vector<CTaskProp *> CTaskVector;
-	typedef std::vector<CTaskProp *>::iterator CTaskVectorIt;
-	CTaskVector m_pTaskVector;
+   std::vector<CTaskProp *> m_pTaskVector;
 public:
-	void SetTask(edict_t *owner, task_handle_t handle, float time, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
+   void SetTask(const edict_t *owner, task_handle_t handle, float time, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
 	void RemoveTask(edict_t *owner, int tid = 0);
 	void ClearTaskByOwner(edict_t *owner = NULL);
 	bool IsExists(edict_t *owner, int tid = 0);
@@ -87,3 +86,4 @@ public:
 };
 
 extern CTaskManager *g_pTaskManager;
+#endif // task_manager_h__

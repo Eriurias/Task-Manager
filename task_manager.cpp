@@ -1,24 +1,38 @@
+//#include "precompiled.h"
+#include "task_manager.h"
+#include <util.h> //rehlds/dlls/util.h
+#include <functional>
 CTaskManager *g_pTaskManager = NULL;
 
-CTaskManager::CTaskProp::CTaskProp(edict_t * owner, task_handle_t handle, float time, float currenttime, task_types_t type, int tid, int repeat)
+CTaskManager::CTaskProp::CTaskProp(const edict_t * owner, task_handle_t handle, float time, task_types_t type, int tid, int repeat)
 {
 	m_pOwner = owner;
 	m_pHandle = handle;
 	m_flCallTime = time;
-	m_flStartTime = currenttime;
+   m_flStartTime = gpGlobals->time;
 	m_iType = type;
 	m_iID = type;
 	m_iRepeat = repeat;
 }
 
-void CTaskManager::SetTask(edict_t *owner, task_handle_t handle, float time, task_types_t type, int tid, int repeat)
+void CTaskManager::CTaskProp::updateCurrentTime(void)
+{
+   m_flStartTime = gpGlobals->time;
+}
+
+bool CTaskManager::CTaskProp::isExpired()
+{
+   
+   return gpGlobals->time >= (m_flStartTime + m_flCallTime);
+}
+
+void CTaskManager::SetTask(const edict_t *owner, task_handle_t handle, float time, task_types_t type, int tid, int repeat)
 {
 	CTaskProp * pThisTask = new CTaskProp
 	(
 		owner,
 		handle,
 		time,
-		gpGlobals->time,
 		type,
 		tid,
 		repeat
@@ -31,10 +45,10 @@ void CTaskManager::RemoveTask(edict_t *owner, int tid)
 {
 	tid += (owner ? ENTINDEX(owner) : 0);
 
-	CTaskVectorIt it = m_pTaskVector.begin();
+	auto it = m_pTaskVector.begin();
 	while (it != m_pTaskVector.end())
 	{
-		CTaskProp * pThisTask = (*it);
+		auto pThisTask = (*it);
 
 		if (pThisTask->getIndex() == tid)
 		{
@@ -62,10 +76,10 @@ bool CTaskManager::IsExists(edict_t *owner, int tid)
 
 void CTaskManager::ClearTaskByOwner(edict_t *owner)
 {
-	CTaskVectorIt it = m_pTaskVector.begin();
+	auto it = m_pTaskVector.begin();
 	while (it != m_pTaskVector.end())
 	{
-		CTaskProp * pThisTask = (*it);
+      auto pThisTask = (*it);
 
 		if (pThisTask->getOwner() == owner)
 		{
@@ -87,10 +101,10 @@ void CTaskManager::StartFrame(float time)
 
 	m_flNextFrame = gpGlobals->time + time;
 
-	CTaskVectorIt it = m_pTaskVector.begin();
+   auto it = m_pTaskVector.begin();
 	while (it != m_pTaskVector.end())
 	{
-		CTaskProp *pThisTask = (*it);
+      auto pThisTask = (*it);
 
 		if (!pThisTask->isExpired())
 		{
