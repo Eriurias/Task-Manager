@@ -1,3 +1,5 @@
+#include "task_manager.h"
+
 CTaskManager *g_pTaskManager = NULL;
 
 CTaskManager::CTaskProp::CTaskProp(edict_t * owner, task_handle_t handle, float time, float currenttime, task_types_t type, int tid, int repeat)
