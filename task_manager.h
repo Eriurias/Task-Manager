@@ -35,7 +35,7 @@ private:
 		int m_iRepeat;
 	public:
 		CTaskProp(void) { };
-		CTaskProp(edict_t * owner, task_handle_t handle, float time, float currenttime, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
+		CTaskProp(edict_t * owner, task_handle_t handle, float time, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
 
 		void updateCurrentTime(void)
 		{
@@ -75,9 +75,7 @@ private:
 
 	int m_iTaskCount;
 	float m_flNextFrame;
-	typedef std::vector<CTaskProp *> CTaskVector;
-	typedef std::vector<CTaskProp *>::iterator CTaskVectorIt;
-	CTaskVector m_pTaskVector;
+	std::vector<CTaskProp *> m_pTaskVector;
 public:
 	void SetTask(edict_t *owner, task_handle_t handle, float time, task_types_t type = TASK_NORMAL, int tid = 0, int repeat = 0);
 	void RemoveTask(edict_t *owner, int tid = 0);
